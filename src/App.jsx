@@ -10,6 +10,7 @@ import { ThirdwebSDK } from "@3rdweb/sdk";
 import { UnsupportedChainIdError } from "@web3-react/core";
 
 import logo from "./img/miru.png";
+import CreateProposal from "./components/CreateProposal";
 
 // We instatiate the sdk on Rinkeby.
 const sdk = new ThirdwebSDK("rinkeby");
@@ -377,6 +378,7 @@ const App = () => {
             </form>
           </div>
         </div>
+        <CreateProposal />
       </div>
     );
   }
