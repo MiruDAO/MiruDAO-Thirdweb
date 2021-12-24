@@ -13,9 +13,10 @@ const tokenModule = sdk.getTokenModule(
 
 (async () => {
   try {
+    await tokenModule.delegateTo(process.env.WALLET_ADDRESS);
     const amount = 420_000;
     // Create proposal to mint 420,000 new token to the treasury.
-    await tokenModule.delegateTo(process.env.WALLET_ADDRESS);
+
     await voteModule.propose(
       "Should the DAO mint an additional " +
         amount +
@@ -45,9 +46,10 @@ const tokenModule = sdk.getTokenModule(
   }
 
   try {
+    await tokenModule.delegateTo(process.env.WALLET_ADDRESS);
     const amount = 6_900;
     // Create proposal to transfer ourselves 6,900 token for being awesome.
-    await tokenModule.delegateTo(process.env.WALLET_ADDRESS);
+
     await voteModule.propose(
       "Should the DAO transfer " +
         amount +

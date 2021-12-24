@@ -378,7 +378,7 @@ const App = () => {
             </form>
           </div>
         </div>
-        <CreateProposal />
+        <CreateProposal sdk={sdk} address={address} />
       </div>
     );
   }
