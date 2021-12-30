@@ -12,6 +12,10 @@ import { UnsupportedChainIdError } from "@web3-react/core";
 import logo from "./img/miru.png";
 import CreateProposal from "./components/CreateProposal";
 import useGetProposals from "./hooks/useGetProposals";
+import { shortenAddress } from "./helpers";
+import useGetVoted from "./hooks/useGetVoted";
+import useGetMemberAddresses from "./hooks/useGetMemberAddresses";
+import useGetHolderBalances from "./hooks/useGetHolderBalances";
 
 // We instatiate the sdk on Rinkeby.
 const sdk = new ThirdwebSDK("rinkeby");
@@ -41,92 +45,27 @@ const App = () => {
   // isClaiming lets us easily keep a loading state while the NFT is minting.
   const [isClaiming, setIsClaiming] = useState(false);
 
-  // Holds the amount of token each member has in state.
-  const [memberTokenAmounts, setMemberTokenAmounts] = useState({});
-  const [votingModuleBalance, setVotingModuleBalance] = useState();
-  // The array holding all of our members addresses.
-  const [memberAddresses, setMemberAddresses] = useState([]);
-
   const [isVoting, setIsVoting] = useState(false);
-  const [hasVoted, setHasVoted] = useState(false);
 
   const [proposals] = useGetProposals({ hasClaimedNFT, voteModule });
 
-  // We also need to check if the user already voted.
-  useEffect(() => {
-    if (!hasClaimedNFT) {
-      return;
-    }
+  const [hasVoted] = useGetVoted({
+    hasClaimedNFT,
+    proposals,
+    voteModule,
+    address,
+  });
 
-    // If we haven't finished retreieving the proposals from the useEffect above
-    // then we can't check if the user voted yet!
-    if (!proposals.length) {
-      return;
-    }
+  const [memberAddresses] = useGetMemberAddresses({
+    hasClaimedNFT,
+    bundleDropModule,
+  });
 
-    // Check if the user has already voted on the first proposal.
-    voteModule
-      .hasVoted(proposals[0].proposalId, address)
-      .then((hasVoted) => {
-        setHasVoted(hasVoted);
-        console.log("🥵 User has already voted");
-      })
-      .catch((err) => {
-        console.error("failed to check if wallet has voted", err);
-      });
-  }, [hasClaimedNFT, proposals, address]);
-
-  // A fancy function to shorten someones wallet address, no need to show the whole thing.
-  const shortenAddress = (str) => {
-    return str.substring(0, 6) + "..." + str.substring(str.length - 4);
-  };
-
-  // This useEffect grabs all our the addresses of our members holding our NFT.
-  useEffect(() => {
-    if (!hasClaimedNFT) {
-      return;
-    }
-
-    // Just like we did in the 7-airdrop-token.js file! Grab the users who hold our NFT
-    // with tokenId 0.
-    bundleDropModule
-      .getAllClaimerAddresses("0")
-      .then((addresses) => {
-        console.log("🚀 Members addresses", addresses);
-        setMemberAddresses(addresses);
-      })
-      .catch((err) => {
-        console.error("failed to get member list", err);
-      });
-  }, [hasClaimedNFT]);
-
-  // This useEffect grabs the # of token each member holds.
-  useEffect(() => {
-    if (!hasClaimedNFT) {
-      return;
-    }
-
-    // Grab all the balances.
-    tokenModule
-      .getAllHolderBalances()
-      .then((amounts) => {
-        console.log("👜 Amounts", amounts);
-        setMemberTokenAmounts(amounts);
-      })
-      .catch((err) => {
-        console.error("failed to get token amounts", err);
-      });
-
-    voteModule
-      .balanceOfToken("0x211bf33199978efc021a77d958bd8c4c36ea9ef5")
-      .then((balance) => {
-        console.log("🤑 Balance of voting module", balance);
-        setVotingModuleBalance(balance.displayValue);
-      })
-      .catch((err) => {
-        console.error("failed to get balance of voting module", err);
-      });
-  }, [hasClaimedNFT]);
+  const [memberTokenAmounts, votingModuleBalance] = useGetHolderBalances({
+    hasClaimedNFT,
+    tokenModule,
+    voteModule,
+  });
 
   // Now, we combine the memberAddresses and memberTokenAmounts into a single array
   const memberList = useMemo(() => {
