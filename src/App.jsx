@@ -11,6 +11,7 @@ import { UnsupportedChainIdError } from "@web3-react/core";
 
 import logo from "./img/miru.png";
 import CreateProposal from "./components/CreateProposal";
+import useGetProposals from "./hooks/useGetProposals";
 
 // We instatiate the sdk on Rinkeby.
 const sdk = new ThirdwebSDK("rinkeby");
@@ -29,6 +30,7 @@ const voteModule = sdk.getVoteModule(
 
 const App = () => {
   const { connectWallet, address, error, provider } = useWeb3();
+
   console.log("👋 Address:", address);
 
   // The signer is required to sign transactions on the blockchain.
@@ -45,27 +47,10 @@ const App = () => {
   // The array holding all of our members addresses.
   const [memberAddresses, setMemberAddresses] = useState([]);
 
-  const [proposals, setProposals] = useState([]);
   const [isVoting, setIsVoting] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
 
-  // Retreive all our existing proposals from the contract.
-  useEffect(() => {
-    if (!hasClaimedNFT) {
-      return;
-    }
-    // A simple call to voteModule.getAll() to grab the proposals.
-    voteModule
-      .getAll()
-      .then((proposals) => {
-        // Set state!
-        setProposals(proposals);
-        console.log("🌈 Proposals:", proposals);
-      })
-      .catch((err) => {
-        console.error("failed to get proposals", err);
-      });
-  }, [hasClaimedNFT]);
+  const [proposals] = useGetProposals({ hasClaimedNFT, voteModule });
 
   // We also need to check if the user already voted.
   useEffect(() => {
