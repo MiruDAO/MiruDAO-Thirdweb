@@ -5,9 +5,9 @@ const useGetHolderBalances = ({ hasClaimedNFT, tokenModule, voteModule }) => {
   const [votingModuleBalance, setVotingModuleBalance] = useState();
   // This useEffect grabs the # of token each member holds.
   useEffect(() => {
-    if (!hasClaimedNFT) {
-      return;
-    }
+    // if (!hasClaimedNFT) {
+    //   return;
+    // }
 
     // Grab all the balances.
     tokenModule

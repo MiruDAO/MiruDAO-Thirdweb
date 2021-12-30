@@ -4,9 +4,9 @@ const useGetVoted = ({ hasClaimedNFT, proposals, voteModule, address }) => {
   const [hasVoted, setHasVoted] = useState(false);
   // We also need to check if the user already voted.
   useEffect(() => {
-    if (!hasClaimedNFT) {
-      return;
-    }
+    // if (!hasClaimedNFT) {
+    //   return;
+    // }
 
     // If we haven't finished retreieving the proposals from the useEffect above
     // then we can't check if the user voted yet!

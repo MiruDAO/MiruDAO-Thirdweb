@@ -5,9 +5,9 @@ const useGetProposals = ({ hasClaimedNFT, voteModule }) => {
 
   // Retreive all our existing proposals from the contract.
   useEffect(() => {
-    if (!hasClaimedNFT) {
-      return;
-    }
+    // if (!hasClaimedNFT) {
+    //   return;
+    // }
     // A simple call to voteModule.getAll() to grab the proposals.
     voteModule
       .getAll()
