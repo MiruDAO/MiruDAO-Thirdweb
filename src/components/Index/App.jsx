@@ -360,7 +360,7 @@ const App = () => {
             }}
           >
             {proposals.map((proposal, index) => (
-              <div key={proposal.proposalId} className="card">
+              <div key={proposal.proposalId} className="card bg-emerald-500">
                 <h5>{proposal.description}</h5>
                 <div>
                   {proposal.votes.map((vote) => (
