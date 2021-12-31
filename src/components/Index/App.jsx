@@ -46,7 +46,14 @@ const App = () => {
 
   const [isVoting, setIsVoting] = useState(false);
 
-  const [proposals] = useGetProposals({ hasClaimedNFT, voteModule });
+  const [hasExecuted, setHasExecuted] = useState(false);
+  const [isExecuting, setIsExecuting] = useState(false);
+
+  const [proposals, goodProposals] = useGetProposals({
+    hasClaimedNFT,
+    voteModule,
+    setHasExecuted,
+  });
 
   const [hasVoted] = useGetVoted({
     hasClaimedNFT,
@@ -112,6 +119,45 @@ const App = () => {
       });
   }, [address]);
 
+  const delegate = async () => {
+    try {
+      const delegation = await tokenModule.getDelegationOf(address);
+      // if the delegation is the 0x0 address that means they have not delegated their governance tokens yet
+      if (delegation === ethers.constants.AddressZero) {
+        //if they haven't delegated their tokens yet, we'll have them delegate them before voting
+        await tokenModule.delegateTo(address);
+      }
+    } catch (err) {
+      console.error("failed to delegate tokens", err);
+    }
+  };
+
+  const executeProposals = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    //before we do async things, we want to disable the button to prevent double clicks
+    setIsExecuting(true);
+    console.log("executing...");
+
+    try {
+      delegate();
+      for (const proposal in goodProposals) {
+        voteModule
+          .execute(proposal)
+          .then(() => {
+            console.log("Successfully executed proposals", goodProposals);
+            setHasExecuted(true);
+          })
+          .catch((error) => {
+            console.log("failed to execute proposals", error);
+          });
+      }
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
   if (error instanceof UnsupportedChainIdError) {
     return (
       <div className="unsupported-network">
@@ -174,6 +220,22 @@ const App = () => {
           <div className="card">
             <h3>Treasury Balance: {votingModuleBalance}</h3>
           </div>
+          {!goodProposals.length
+            ? [
+                <button
+                  key={1}
+                  disabled={isExecuting || hasExecuted}
+                  onClick={executeProposals}
+                >
+                  {isExecuting
+                    ? "Executing..."
+                    : hasExecuted
+                    ? "Successful proposals have been executed"
+                    : "Execute successful proposals"}
+                </button>,
+              ]
+            : null}
+          <CreateProposal sdk={sdk} address={address} />
         </div>
         <div>
           <h2>Active Proposals</h2>
@@ -298,7 +360,6 @@ const App = () => {
           </form>
         </div>
       </div>
-      <CreateProposal sdk={sdk} address={address} />
     </div>
   );
 };
