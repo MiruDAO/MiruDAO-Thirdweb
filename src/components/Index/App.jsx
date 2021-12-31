@@ -40,7 +40,7 @@ const App = () => {
   // Without it we can only read data, not write.
   const signer = provider ? provider.getSigner() : undefined;
 
-  const [hasClaimedNFT, setHasClaimedNFT] = useState(false);
+  const [hasClaimedNFT, setHasClaimedNFT] = useState(true);
   // isClaiming lets us easily keep a loading state while the NFT is minting.
   const [isClaiming, setIsClaiming] = useState(false);
 
@@ -140,19 +140,15 @@ const App = () => {
     setIsExecuting(true);
     console.log("executing...");
 
+    delegate();
     try {
-      delegate();
-      for (const proposal in goodProposals) {
-        voteModule
-          .execute(proposal)
-          .then(() => {
-            console.log("Successfully executed proposals", goodProposals);
-            setHasExecuted(true);
-          })
-          .catch((error) => {
-            console.log("failed to execute proposals", error);
-          });
-      }
+      await Promise.all(
+        goodProposals.map(async (proposalId) => {
+          return voteModule.execute(proposalId);
+        })
+      );
+    } catch (err) {
+      console.log("Failed to execute proposals", err);
     } finally {
       setIsExecuting(false);
     }
