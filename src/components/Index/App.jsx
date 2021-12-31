@@ -55,7 +55,7 @@ const App = () => {
     setHasExecuted,
   });
 
-  const [hasVoted] = useGetVoted({
+  const [hasVoted, setHasVoted] = useGetVoted({
     hasClaimedNFT,
     proposals,
     voteModule,
@@ -286,7 +286,13 @@ const App = () => {
                       // then we check if the proposal is open for voting (state === 1 means it is open)
                       if (proposal.state === 1) {
                         // if it is open for voting, we'll vote on it
-                        return voteModule.vote(vote.proposalId, vote.vote);
+                        const voted = await voteModule.hasVoted(
+                          proposal.proposalId,
+                          address
+                        );
+                        if (!voted) {
+                          return voteModule.vote(vote.proposalId, vote.vote);
+                        }
                       }
                       // if the proposal is not open for voting we just return nothing, letting us continue
                       return;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { ethers } from "ethers";
 
 const useGetVoted = ({ hasClaimedNFT, proposals, voteModule, address }) => {
   const [hasVoted, setHasVoted] = useState(false);
@@ -16,17 +17,27 @@ const useGetVoted = ({ hasClaimedNFT, proposals, voteModule, address }) => {
 
     // Check if the user has already voted on the first proposal.
     voteModule
-      .hasVoted(proposals[0].proposalId, address)
+      .hasVoted(proposals[proposals.length - 1].proposalId, address)
       .then((hasVoted) => {
         setHasVoted(hasVoted);
-        console.log("🥵 User has already voted");
+        if (hasVoted) {
+          console.log("🥵 User has already voted");
+        } else {
+          console.log("User still needs to vote");
+        }
+        // console.log(
+        //   ethers.utils.formatUnits(
+        //     proposals[proposals.length - 1].votes[1].count.toString(),
+        //     18
+        //   )
+        // );
       })
       .catch((err) => {
         console.error("failed to check if wallet has voted", err);
       });
   }, [hasClaimedNFT, proposals, address]);
 
-  return [hasVoted];
+  return [hasVoted, setHasVoted];
 };
 
 export default useGetVoted;
