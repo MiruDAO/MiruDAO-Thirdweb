@@ -1,6 +1,6 @@
 import React from "react";
-import "../index.css";
-
+// import "../styles/index.css";
+import "../styles/output.css";
 // Import ThirdWeb
 import { ThirdwebWeb3Provider } from "@3rdweb/hooks";
 

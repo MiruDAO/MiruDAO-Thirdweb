@@ -16,8 +16,6 @@ import useGetVoted from "../../hooks/useGetVoted";
 import useGetMemberAddresses from "../../hooks/useGetMemberAddresses";
 import useGetHolderBalances from "../../hooks/useGetHolderBalances";
 
-import "./styles/output.css";
-
 // We instatiate the sdk on Rinkeby.
 const sdk = new ThirdwebSDK("rinkeby");
 

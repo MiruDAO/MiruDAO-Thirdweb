@@ -21,7 +21,7 @@
     "dev": "npm run watch:css && next dev",
     "build": "npm run watch:css && next build",
     "start": "npm run watch:css && next start",
-    "watch:css": "postcss src/styles/tailwind.css -o src/styles/output.css"
+    "watch:css": "postcss src/styles/index.css -o src/styles/output.css"
   },
   "eslintConfig": {
     "extends": [
