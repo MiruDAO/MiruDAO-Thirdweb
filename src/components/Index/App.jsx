@@ -16,6 +16,8 @@ import useGetVoted from "../../hooks/useGetVoted";
 import useGetMemberAddresses from "../../hooks/useGetMemberAddresses";
 import useGetHolderBalances from "../../hooks/useGetHolderBalances";
 
+import "./styles/output.css";
+
 // We instatiate the sdk on Rinkeby.
 const sdk = new ThirdwebSDK("rinkeby");
 
@@ -118,6 +120,39 @@ const App = () => {
         console.error("failed to call nft balance", error);
       });
   }, [address]);
+
+  // useEffect(() => {
+  //   if (!proposals.length) {
+  //     return;
+  //   }
+
+  //   const proposalCards = proposals.map((proposal, index) => (
+  //     // if (proposal.state !== 1 ) {
+
+  //     // }
+  //     <div key={proposal.proposalId} className="card">
+  //       <h5>{proposal.description}</h5>
+  //       <div>
+  //         {proposal.votes.map((vote) => (
+  //           <div key={vote.type}>
+  //             <input
+  //               type="radio"
+  //               id={proposal.proposalId + "-" + vote.type}
+  //               name={proposal.proposalId}
+  //               value={vote.type}
+  //               //default the "abstain" vote to chedked
+  //               defaultChecked={vote.type === 2}
+  //               disabled={proposal.state!==1}
+  //             />
+  //             <label htmlFor={proposal.proposalId + "-" + vote.type}>
+  //               {vote.label}
+  //             </label>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   ));
+  // }, [proposals]);
 
   const delegate = async () => {
     try {
@@ -339,6 +374,7 @@ const App = () => {
                         value={vote.type}
                         //default the "abstain" vote to chedked
                         defaultChecked={vote.type === 2}
+                        disabled={proposal.state !== 1}
                       />
                       <label htmlFor={proposal.proposalId + "-" + vote.type}>
                         {vote.label}
