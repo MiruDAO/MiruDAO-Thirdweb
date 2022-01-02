@@ -1,6 +1,7 @@
 import React from "react";
 // import "../styles/index.css";
 import "../styles/output.css";
+import '../index.css'
 // Import ThirdWeb
 import { ThirdwebWeb3Provider } from "@3rdweb/hooks";
 
@@ -19,6 +20,9 @@ function MyApp({ Component, pageProps }) {
         connectors={connectors}
         supportedChainIds={supportedChainIds}
       >
+          <h1 className="text-3xl text-black font-bold underline">
+      Hello world!
+    </h1>
         <div className="landing">
           <Component {...pageProps} />
         </div>
