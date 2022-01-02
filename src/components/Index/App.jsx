@@ -201,9 +201,9 @@ const App = () => {
 
   if (!address) {
     return (
-      <div className="landing">
-        <h1>Welcome to MiruDAO 🧠</h1>
-        <button onClick={() => connectWallet("injected")} className="btn-hero">
+      <div className="">
+        <h1 className="font-bold text-5xl pt-20 pb-8">Welcome to MiruDAO 🧠</h1>
+        <button onClick={() => connectWallet("injected")} className="bg-black p-4 hover:bg-white hover:text-black duration-700 ">
           Connect your wallet
         </button>
       </div>
